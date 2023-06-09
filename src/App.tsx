@@ -53,7 +53,7 @@ export default function App() {
           ]}
         />
       </Header>
-      <Content style={{ minHeight: "calc(100vh - 64px)" }}>
+      <Content style={{ minHeight: "calc(100vh - 64px)", padding: 24 }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<Users />} />
