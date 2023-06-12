@@ -9,6 +9,7 @@ import RegisterDialog from "./Dialogs/RegisterDialog";
 import { useIsLoggedIn } from "./Providers/AuthProvider";
 import ProfileDialog from "./Dialogs/ProfileDialog";
 import LoginDialog from "./Dialogs/LoginDialog";
+import Send from "./Containers/Transactions/Send";
 
 export default function App() {
   const navigate = useNavigate();
@@ -123,6 +124,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<Users />} />
           <Route path="/transactions" element={<Transactions />} />
+          <Route path="/send" element={<Send />} />
         </Routes>
       </Content>
     </Layout>

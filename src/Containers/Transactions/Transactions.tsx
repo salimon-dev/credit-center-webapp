@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { searchTransactions } from "../../Rest/transactions";
 import { useState } from "react";
 import { useAxios } from "../../Providers/AuthProvider";
+import { tsToDate } from "../../utils";
 
 const pageSize = 10;
 export default function Transactions() {
@@ -20,8 +21,8 @@ export default function Transactions() {
       to: item.to.name,
       amount: item.amount,
       fee: item.fee,
-      createdAt: item.createdAt,
-      exectuedAt: item.executedAt,
+      createdAt: tsToDate(item.createdAt),
+      executedAt: item.executedAt ? tsToDate(item.executedAt) : "-",
     }));
   }
 

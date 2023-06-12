@@ -1,9 +1,9 @@
 import { Axios } from "axios";
 import { ICollection, IUser } from "../structs";
 
-export function fecthUser(name: string, axios: Axios) {
+export function fecthUser(id: string, axios: Axios) {
   return axios
-    .get<{ ok: boolean; user: IUser }>("/fetch/" + name)
+    .get<{ ok: boolean; user: IUser }>("/fetch", { params: { id } })
     .then((response) => response.data.user);
 }
 

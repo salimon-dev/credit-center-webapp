@@ -3,13 +3,13 @@ import { ITransaction } from "../structs";
 
 interface IProps {
   open: boolean;
-  transaction: ITransaction;
+  id: string;
   onClose: () => void;
 }
-export default function AcceptDialog({ transaction, onClose, open }: IProps) {
+export default function AcceptDialog({ onClose, open }: IProps) {
   return (
     <Modal open={open} onCancel={onClose}>
-      accept dialog {transaction.from._id}
+      {/* accept dialog {transaction.from._id} */}
     </Modal>
   );
 }

@@ -52,3 +52,11 @@ export async function declineTransaction(id: string, axios: Axios) {
     .post<{ ok: boolean }>("/decline/" + id)
     .then((response) => response.data.ok);
 }
+
+export async function getFee(amount: number, axios: Axios) {
+  return axios
+    .get<{ ok: boolean; amount: number; fee: number }>("/fee", {
+      params: { amount },
+    })
+    .then((response) => response.data);
+}

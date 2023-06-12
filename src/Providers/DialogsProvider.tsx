@@ -2,7 +2,7 @@ import { ReactNode, createContext, useState } from "react";
 
 interface ITransferParam {
   address?: string;
-  amount?: string;
+  amount?: number;
 }
 
 export interface IDialogsContext {
@@ -53,19 +53,40 @@ export function DialogsContextProvider({ children }: IProps) {
   const [openDemandDialog, setOpenDemandDialog] = useState(false);
   const [openExecuteDialog, setOpenExecuteDialog] = useState(false);
   const [openDeclineDialog, setOpenDeclineDialog] = useState(false);
+  const [address, setAddress] = useState<string>();
+  const [amount, setAmount] = useState<number>();
+  const [transactionId, setTransactionId] = useState<string>();
   return (
     <DialogContext.Provider
       value={{
         openDeclineDialog: (id: string) => {
+          setTransactionId(id);
           setOpenDeclineDialog(true);
         },
         openExecuteDialog: (id: string) => {
+          setTransactionId(id);
           setOpenExecuteDialog(true);
         },
         openDemandDialog: (params?: ITransferParam) => {
+          if (params) {
+            if (params.address) {
+              setAddress(params.address);
+            }
+            if (params.amount) {
+              setAmount(params.amount);
+            }
+          }
           setOpenDemandDialog(true);
         },
         openSendDialog: (params?: ITransferParam) => {
+          if (params) {
+            if (params.address) {
+              setAddress(params.address);
+            }
+            if (params.amount) {
+              setAmount(params.amount);
+            }
+          }
           setOpenSendDialog(true);
         },
         closeDeclineDialog: () => {
