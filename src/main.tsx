@@ -5,6 +5,7 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AuthContextProvider } from "./Providers/AuthProvider.tsx";
+import { DialogsContextProvider } from "./Providers/DialogsProvider.tsx";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthContextProvider>
-          <App />
+          <DialogsContextProvider>
+            <App />
+          </DialogsContextProvider>
         </AuthContextProvider>
       </BrowserRouter>
     </QueryClientProvider>

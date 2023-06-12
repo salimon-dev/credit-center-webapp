@@ -19,9 +19,8 @@ export async function searchTransactions(
 }
 
 interface ISendBalanceParams {
-  from: string;
   to: string;
-  amount: string;
+  amount: number;
 }
 export async function sendBalance(params: ISendBalanceParams, axios: Axios) {
   return axios
@@ -31,10 +30,12 @@ export async function sendBalance(params: ISendBalanceParams, axios: Axios) {
 
 interface IDemandBalanceParams {
   from: string;
-  to: string;
-  amount: string;
+  amount: number;
 }
-export async function demand(params: IDemandBalanceParams, axios: Axios) {
+export async function demandBalance(
+  params: IDemandBalanceParams,
+  axios: Axios
+) {
   return axios
     .post<{ ok: boolean; transaction: ITransaction }>("/demand", params)
     .then((response) => response.data.transaction);
