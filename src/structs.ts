@@ -4,6 +4,8 @@ export interface IUser {
   score: number;
   balance: number;
   registeredAt: number;
+  secretToken: string;
+  secretDate: number;
 }
 
 export interface ITransaction {

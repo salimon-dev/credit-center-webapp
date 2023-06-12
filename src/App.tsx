@@ -1,13 +1,24 @@
-import { Button, Layout, Menu, Space, theme } from "antd";
+import { Button, Layout, Space, theme } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import { Route, Routes, useMatch, useNavigate } from "react-router-dom";
 import Home from "./Containers/Home/Home";
 import Transactions from "./Containers/Transactions/Transactions";
 import Users from "./Containers/Users/Users";
+import { useState } from "react";
+import RegisterDialog from "./Dialogs/RegisterDialog";
+import { useIsLoggedIn } from "./Providers/AuthProvider";
+import ProfileDialog from "./Dialogs/ProfileDialog";
+import LoginDialog from "./Dialogs/LoginDialog";
 
 export default function App() {
   const navigate = useNavigate();
   const { token } = theme.useToken();
+
+  const isLoggedIn = useIsLoggedIn();
+
+  const [openRegister, setOpenRegister] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
 
   const defaultKey = [];
 
@@ -23,8 +34,25 @@ export default function App() {
   }
   return (
     <Layout className="layout">
+      <RegisterDialog
+        open={openRegister}
+        onClose={() => {
+          setOpenRegister(false);
+        }}
+      />
+      <LoginDialog
+        open={openLogin}
+        onClose={() => {
+          setOpenLogin(false);
+        }}
+      />
+      <ProfileDialog
+        open={openProfile}
+        onClose={() => {
+          setOpenProfile(false);
+        }}
+      />
       <Header style={{ display: "flex", alignItems: "center" }}>
-        <div className="demo-logo" />
         <Space>
           <Button
             onClick={() => {
@@ -55,9 +83,39 @@ export default function App() {
           </Button>
         </Space>
         <Space style={{ marginLeft: "auto" }}>
-          <Button type="text" style={{ color: token.colorBgLayout }}>
-            Login
-          </Button>
+          {!isLoggedIn && (
+            <Button
+              type="text"
+              style={{ color: token.colorBgLayout }}
+              onClick={() => {
+                setOpenRegister(true);
+              }}
+            >
+              Register
+            </Button>
+          )}
+          {!isLoggedIn && (
+            <Button
+              type="text"
+              onClick={() => {
+                setOpenLogin(true);
+              }}
+              style={{ color: token.colorBgLayout }}
+            >
+              Login
+            </Button>
+          )}
+          {isLoggedIn && (
+            <Button
+              type="text"
+              style={{ color: token.colorBgLayout }}
+              onClick={() => {
+                setOpenProfile(true);
+              }}
+            >
+              Profile
+            </Button>
+          )}
         </Space>
       </Header>
       <Content style={{ minHeight: "calc(100vh - 64px)", padding: 24 }}>

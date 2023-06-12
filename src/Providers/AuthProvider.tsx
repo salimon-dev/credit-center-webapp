@@ -1,14 +1,20 @@
 import axios from "axios";
-import { ReactNode, createContext, useContext, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { IUser } from "../structs";
 
 export interface IAuthContext {
-  secretToken?: string;
-  name?: string;
-  authorize: (secretToken: string, name: string) => void;
+  user?: IUser;
+  setUser: (user?: IUser) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
-  authorize: () => {
+  setUser: () => {
     return;
   },
 });
@@ -18,30 +24,46 @@ interface IProps {
 }
 
 export function AuthContextProvider({ children }: IProps) {
-  const [secretToken, setSecretToken] = useState<string>();
-  const [name, setName] = useState<string>();
-
-  function authorize(st: string, n: string) {
-    setSecretToken(st);
-    setName(n);
-  }
+  const [user, setUser] = useState<IUser>();
+  useEffect(() => {
+    const data = localStorage.getItem("user");
+    if (data) {
+      const localUser = JSON.parse(data);
+      setUser(localUser as IUser);
+    }
+  }, []);
   return (
-    <AuthContext.Provider value={{ secretToken, name, authorize }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser: (data?: IUser) => {
+          setUser(data);
+          if (data) {
+            localStorage.setItem("user", JSON.stringify(data));
+          }
+        },
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAxios() {
-  const { secretToken } = useContext(AuthContext);
-  if (secretToken) {
+  const { user } = useContext(AuthContext);
+  if (user) {
     return axios.create({
       baseURL: import.meta.env.VITE_BASE_URL,
-      headers: { Authorization: "Bearer " + secretToken },
+      headers: { Authorization: "Bearer " + user.secretToken },
     });
   } else {
     return axios.create({
       baseURL: import.meta.env.VITE_BASE_URL,
     });
   }
+}
+
+export function useIsLoggedIn() {
+  const { user } = useContext(AuthContext);
+  return !!user;
 }

@@ -17,3 +17,19 @@ export function searchUsers(params: ISearchUsersParams, axios: Axios) {
     .get<ICollection<IUser>>("/users", { params })
     .then((response) => response.data);
 }
+
+export function register(name: string, axios: Axios) {
+  return axios
+    .post<{ ok: boolean; user: IUser }>("/register", { name })
+    .then((response) => response.data);
+}
+
+interface ILoginParams {
+  name: string;
+  secretToken: string;
+}
+export function login(params: ILoginParams, axios: Axios) {
+  return axios
+    .post<{ ok: boolean; user: IUser }>("/login", params)
+    .then((response) => response.data);
+}

@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, Modal, Row, Space } from "antd";
-import { register } from "../Rest/users";
+import { login } from "../Rest/users";
 import { AuthContext, useAxios } from "../Providers/AuthProvider";
 import { useContext } from "react";
 
@@ -7,12 +7,12 @@ interface IProps {
   open: boolean;
   onClose: () => void;
 }
-export default function RegisterDialog({ onClose, open }: IProps) {
+export default function LoginDialog({ onClose, open }: IProps) {
   const axios = useAxios();
   const { setUser } = useContext(AuthContext);
-  async function submit({ name }: { name: string }) {
+  async function submit(values: { name: string; secretToken: string }) {
     try {
-      const result = await register(name, axios);
+      const result = await login(values, axios);
       setUser(result.user);
       onClose();
     } catch (e) {
@@ -20,11 +20,20 @@ export default function RegisterDialog({ onClose, open }: IProps) {
     }
   }
   return (
-    <Modal open={open} title="Register" footer={null} onCancel={onClose}>
+    <Modal open={open} title="Login" footer={null} onCancel={onClose}>
       <Form layout="vertical" onFinish={submit}>
         <Row gutter={[12, 12]}>
           <Col xs={24}>
             <Form.Item name="name" label="Name" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col xs={24}>
+            <Form.Item
+              name="secretToken"
+              label="Secret Token"
+              rules={[{ required: true }]}
+            >
               <Input />
             </Form.Item>
           </Col>

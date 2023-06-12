@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { useState } from "react";
 import { useAxios } from "../../Providers/AuthProvider";
 import { searchUsers } from "../../Rest/users";
+import { tsToDate } from "../../utils";
 
 const pageSize = 10;
 export default function Users() {
@@ -19,7 +20,7 @@ export default function Users() {
       name: item.name,
       score: item.score,
       balance: item.balance,
-      registeredAt: item.registeredAt,
+      registeredAt: tsToDate(item.registeredAt),
     }));
   }
 
