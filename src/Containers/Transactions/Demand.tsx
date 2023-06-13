@@ -14,7 +14,7 @@ import {
 import { fecthUser } from "../../Rest/users";
 import { useAxios } from "../../Providers/AuthProvider";
 import { useState } from "react";
-import { getFee, sendBalance } from "../../Rest/transactions";
+import { demandBalance, getFee } from "../../Rest/transactions";
 import { AxiosError } from "axios";
 
 interface IPreviewProps {
@@ -33,19 +33,19 @@ function PreviewResult({ id, name, amount, fee }: IPreviewProps) {
       </Col>
       <Col xs={24}>
         <Typography.Text>
-          Amount receipt recieves: {amount} (you pay {fee} in addition as fee)
+          Amount you get: {amount} (sender will pay {fee} as fee)
         </Typography.Text>
       </Col>
       <Col xs={24}>
         <Typography.Text>
-          Total amount spent on this transaction: {amount + fee}
+          Total amount spending on this transaction by sender: {amount + fee}
         </Typography.Text>
       </Col>
     </>
   );
 }
 
-export default function Send() {
+export default function Demand() {
   const [messageApi, messageContext] = message.useMessage();
   const axios = useAxios();
   const [form] = Form.useForm();
@@ -77,8 +77,11 @@ export default function Send() {
       setError(undefined);
       setSending(true);
       const { id, amount } = await form.validateFields();
-      await sendBalance({ to: id, amount }, axios);
-      messageApi.open({ type: "success", content: "transaction sent!" });
+      await demandBalance({ from: id, amount }, axios);
+      messageApi.open({
+        type: "success",
+        content: "demand request submitted!",
+      });
     } catch (e) {
       console.log(e);
       const error = e as AxiosError;
@@ -95,7 +98,7 @@ export default function Send() {
     <Row gutter={[0, 12]} style={{ justifyContent: "center" }}>
       {messageContext}
       <Col xs={24} md={20} lg={18} xl={16}>
-        <Card title="Send balance">
+        <Card title="Demand credit">
           <Form layout="vertical" form={form}>
             <Row gutter={[12, 12]}>
               <Col xs={12}>
@@ -133,7 +136,7 @@ export default function Send() {
                     onClick={send}
                     loading={sending}
                   >
-                    Send
+                    Submit
                   </Button>
                   <Button onClick={runPreview} loading={runningPreview}>
                     Preview

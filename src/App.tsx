@@ -10,6 +10,7 @@ import { useIsLoggedIn } from "./Providers/AuthProvider";
 import ProfileDialog from "./Dialogs/ProfileDialog";
 import LoginDialog from "./Dialogs/LoginDialog";
 import Send from "./Containers/Transactions/Send";
+import Demand from "./Containers/Transactions/Demand";
 
 export default function App() {
   const navigate = useNavigate();
@@ -125,6 +126,7 @@ export default function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/send" element={<Send />} />
+          <Route path="/demand" element={<Demand />} />
         </Routes>
       </Content>
     </Layout>
