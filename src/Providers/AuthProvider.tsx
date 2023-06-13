@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { IUser } from "../structs";
+import { baseUrl } from "../configs/base";
 
 export interface IAuthContext {
   user?: IUser;
@@ -53,12 +54,12 @@ export function useAxios() {
   const { user } = useContext(AuthContext);
   if (user) {
     return axios.create({
-      baseURL: import.meta.env.VITE_BASE_URL,
+      baseURL: baseUrl(),
       headers: { Authorization: "Bearer " + user.secretToken },
     });
   } else {
     return axios.create({
-      baseURL: import.meta.env.VITE_BASE_URL,
+      baseURL: baseUrl(),
     });
   }
 }
