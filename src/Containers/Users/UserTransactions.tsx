@@ -78,7 +78,7 @@ export default function UserTransactions({ address }: IProps) {
   }
 
   return (
-    <Col xs={24} md={20} lg={18} xl={16}>
+    <Col xs={24} md={22} lg={22} xl={22}>
       <Card title="Transactions">
         <Row gutter={[12, 12]}>
           <Col xs={24}>

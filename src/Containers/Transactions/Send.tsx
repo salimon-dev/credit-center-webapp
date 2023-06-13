@@ -16,6 +16,7 @@ import { useAxios } from "../../Providers/AuthProvider";
 import { useState } from "react";
 import { getFee, sendBalance } from "../../Rest/transactions";
 import { AxiosError } from "axios";
+import { useSearchParams } from "react-router-dom";
 
 interface IPreviewProps {
   id: string;
@@ -46,6 +47,7 @@ function PreviewResult({ id, name, amount, fee }: IPreviewProps) {
 }
 
 export default function Send() {
+  const [searchParams] = useSearchParams();
   const [messageApi, messageContext] = message.useMessage();
   const axios = useAxios();
   const [form] = Form.useForm();
@@ -96,7 +98,11 @@ export default function Send() {
       {messageContext}
       <Col xs={24} md={20} lg={18} xl={16}>
         <Card title="Send balance">
-          <Form layout="vertical" form={form}>
+          <Form
+            layout="vertical"
+            form={form}
+            initialValues={{ id: searchParams.get("address") }}
+          >
             <Row gutter={[12, 12]}>
               <Col xs={12}>
                 <Form.Item
