@@ -1,6 +1,6 @@
 runtime: nodejs18
 service: credit-app
-env_variables:
+build_env_variables:
   VITE_BASE_URL: "https://credit-api-dot-salimon.ew.r.appspot.com"
 handlers:
   # Serve all static files with url ending with a file extension
