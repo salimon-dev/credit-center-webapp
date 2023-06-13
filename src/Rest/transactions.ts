@@ -43,13 +43,13 @@ export async function demandBalance(
 
 export async function extecuteTransaction(id: string, axios: Axios) {
   return axios
-    .post<{ ok: boolean }>("/execute/" + id)
+    .get<{ ok: boolean }>("/execute", { params: { id } })
     .then((response) => response.data.ok);
 }
 
 export async function declineTransaction(id: string, axios: Axios) {
   return axios
-    .post<{ ok: boolean }>("/decline/" + id)
+    .get<{ ok: boolean }>("/decline", { params: { id } })
     .then((response) => response.data.ok);
 }
 

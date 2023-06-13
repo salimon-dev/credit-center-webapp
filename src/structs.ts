@@ -9,6 +9,7 @@ export interface IUser {
 }
 
 export interface ITransaction {
+  _id: string;
   from: { _id: string; name: string };
   to: { _id: string; name: string };
   amount: number;
