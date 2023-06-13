@@ -11,6 +11,7 @@ import ProfileDialog from "./Dialogs/ProfileDialog";
 import LoginDialog from "./Dialogs/LoginDialog";
 import Send from "./Containers/Transactions/Send";
 import Demand from "./Containers/Transactions/Demand";
+import User from "./Containers/Users/User";
 
 export default function App() {
   const navigate = useNavigate();
@@ -124,6 +125,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/user/:id" element={<User />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/send" element={<Send />} />
           <Route path="/demand" element={<Demand />} />

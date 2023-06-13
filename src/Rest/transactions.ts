@@ -6,6 +6,7 @@ interface ISearchTransactionsParams {
   pageSize?: number;
   from?: string;
   to?: string;
+  address?: string;
 }
 export async function searchTransactions(
   params: ISearchTransactionsParams,

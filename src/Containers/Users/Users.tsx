@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAxios } from "../../Providers/AuthProvider";
 import { searchUsers } from "../../Rest/users";
 import { tsToDate } from "../../utils";
+import { Link } from "react-router-dom";
 
 const pageSize = 10;
 export default function Users() {
@@ -17,7 +18,7 @@ export default function Users() {
     if (isLoading || !data) return;
     return data.data.map((item, index) => ({
       num: (page - 1) * pageSize + index + 1,
-      name: item.name,
+      name: <Link to={"/user/" + item._id}>{item.name}</Link>,
       score: item.score,
       balance: item.balance,
       registeredAt: tsToDate(item.registeredAt),
