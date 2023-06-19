@@ -20,7 +20,7 @@ export function searchUsers(params: ISearchUsersParams, axios: Axios) {
 
 export function register(name: string, axios: Axios) {
   return axios
-    .post<{ ok: boolean; user: IUser }>("/register", { name })
+    .post<{ ok: boolean; user: IUser }>("/auth/register", { name })
     .then((response) => response.data);
 }
 
@@ -30,6 +30,6 @@ interface ILoginParams {
 }
 export function login(params: ILoginParams, axios: Axios) {
   return axios
-    .post<{ ok: boolean; user: IUser }>("/login", params)
+    .post<{ ok: boolean; user: IUser }>("/auth/login", params)
     .then((response) => response.data);
 }

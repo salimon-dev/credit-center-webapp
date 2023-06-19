@@ -12,6 +12,7 @@ import LoginDialog from "./Dialogs/LoginDialog";
 import Send from "./Containers/Transactions/Send";
 import Demand from "./Containers/Transactions/Demand";
 import User from "./Containers/Users/User";
+import Profile from "./Containers/Profile/Profile";
 
 export default function App() {
   const navigate = useNavigate();
@@ -86,28 +87,6 @@ export default function App() {
           </Button>
         </Space>
         <Space style={{ marginLeft: "auto" }}>
-          {!isLoggedIn && (
-            <Button
-              type="text"
-              style={{ color: token.colorBgLayout }}
-              onClick={() => {
-                setOpenRegister(true);
-              }}
-            >
-              Register
-            </Button>
-          )}
-          {!isLoggedIn && (
-            <Button
-              type="text"
-              onClick={() => {
-                setOpenLogin(true);
-              }}
-              style={{ color: token.colorBgLayout }}
-            >
-              Login
-            </Button>
-          )}
           {isLoggedIn && (
             <Button
               type="text"
@@ -123,7 +102,8 @@ export default function App() {
       </Header>
       <Content style={{ minHeight: "calc(100vh - 64px)", padding: 24 }}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          {!isLoggedIn && <Route path="/" element={<Home />} />}
+          {isLoggedIn && <Route path="/" element={<Profile />} />}
           <Route path="/users" element={<Users />} />
           <Route path="/user/:id" element={<User />} />
           <Route path="/transactions" element={<Transactions />} />

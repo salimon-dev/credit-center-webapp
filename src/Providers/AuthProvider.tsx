@@ -41,6 +41,8 @@ export function AuthContextProvider({ children }: IProps) {
           setUser(data);
           if (data) {
             localStorage.setItem("user", JSON.stringify(data));
+          } else {
+            localStorage.removeItem("user");
           }
         },
       }}
