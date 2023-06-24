@@ -8,14 +8,19 @@ import {
 } from "react";
 import { IUser } from "../structs";
 import { baseUrl } from "../configs/base";
+import { getProfile } from "../Rest/users";
 
 export interface IAuthContext {
   user?: IUser;
   setUser: (user?: IUser) => void;
+  updateProfile: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   setUser: () => {
+    return;
+  },
+  updateProfile: () => {
     return;
   },
 });
@@ -26,17 +31,52 @@ interface IProps {
 
 export function AuthContextProvider({ children }: IProps) {
   const [user, setUser] = useState<IUser>();
+  const [loading, setLoading] = useState(true);
+  async function updateProfile() {
+    if (!user) return;
+    getProfile(
+      axios.create({
+        baseURL: baseUrl(),
+        headers: { Authorization: "Bearer " + user.secretToken },
+      })
+    ).then((response) => {
+      setUser({
+        ...user,
+        name: response.user.name,
+        balance: response.user.balance,
+        score: response.user.score,
+      });
+      setLoading(false);
+    });
+  }
   useEffect(() => {
     const data = localStorage.getItem("user");
     if (data) {
       const localUser = JSON.parse(data);
-      setUser(localUser as IUser);
+      getProfile(
+        axios.create({
+          baseURL: baseUrl(),
+          headers: { Authorization: "Bearer " + localUser.secretToken },
+        })
+      ).then((response) => {
+        setUser({
+          ...localUser,
+          name: response.user.name,
+          balance: response.user.balance,
+          score: response.user.score,
+        });
+        setLoading(false);
+      });
     }
   }, []);
+  if (loading) {
+    return <div>loading...</div>;
+  }
   return (
     <AuthContext.Provider
       value={{
         user,
+        updateProfile,
         setUser: (data?: IUser) => {
           setUser(data);
           if (data) {
@@ -55,6 +95,7 @@ export function AuthContextProvider({ children }: IProps) {
 export function useAxios() {
   const { user } = useContext(AuthContext);
   if (user) {
+    console.log(user.secretToken);
     return axios.create({
       baseURL: baseUrl(),
       headers: { Authorization: "Bearer " + user.secretToken },

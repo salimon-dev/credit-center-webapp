@@ -1,9 +1,9 @@
 import { Axios } from "axios";
 import { ICollection, IUser } from "../structs";
 
-export function fecthUser(id: string, axios: Axios) {
+export function fecthUser(name: string, axios: Axios) {
   return axios
-    .get<{ ok: boolean; user: IUser }>("/fetch", { params: { id } })
+    .get<{ ok: boolean; user: IUser }>("/fetch", { params: { name } })
     .then((response) => response.data.user);
 }
 
@@ -31,5 +31,11 @@ interface ILoginParams {
 export function login(params: ILoginParams, axios: Axios) {
   return axios
     .post<{ ok: boolean; user: IUser }>("/auth/login", params)
+    .then((response) => response.data);
+}
+
+export function getProfile(axios: Axios) {
+  return axios
+    .get<{ ok: boolean; user: IUser }>("/auth/profile")
     .then((response) => response.data);
 }

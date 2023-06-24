@@ -1,30 +1,24 @@
 import { Button, Card, Col, Popconfirm, Row, Space, Table } from "antd";
-import { useQuery } from "react-query";
+import { AuthContext, useAxios } from "../../../Providers/AuthProvider";
 import { useContext, useState } from "react";
-import { AuthContext, useAxios } from "../../Providers/AuthProvider";
-import { tsToDate } from "../../utils";
+import { useQuery } from "react-query";
 import {
   declineTransaction,
   extecuteTransaction,
   searchTransactions,
-} from "../../Rest/transactions";
-import { ITransaction } from "../../structs";
-import TransactionStatus from "../../Components/TransactionStatus";
+} from "../../../Rest/transactions";
+import { ITransaction } from "../../../structs";
+import { tsToDate } from "../../../utils";
+import TransactionStatus from "../../../Components/TransactionStatus";
 
 const pageSize = 10;
-interface IProps {
-  address: string;
-}
-export default function UserTransactions({ address }: IProps) {
-  const { user } = useContext(AuthContext);
+export default function Transactions() {
   const axios = useAxios();
+  const { user, updateProfile } = useContext(AuthContext);
   const [page, setPage] = useState(1);
-  const { data, isLoading, refetch } = useQuery(
-    ["transactions", address, page],
-    () => {
-      return searchTransactions({ address, page, pageSize }, axios);
-    }
-  );
+  const { data, isLoading, refetch } = useQuery(["transactions", page], () => {
+    return searchTransactions({ page, pageSize }, axios);
+  });
 
   function dataSource() {
     if (isLoading || !data) return;
@@ -40,6 +34,7 @@ export default function UserTransactions({ address }: IProps) {
                 description={`by executing this transaction you send ${item.amount} to ${item.to.name} and pay ${item.fee} as fee to it.`}
                 onConfirm={async () => {
                   await extecuteTransaction(item._id, axios);
+                  updateProfile();
                   refetch();
                 }}
               >
@@ -53,6 +48,7 @@ export default function UserTransactions({ address }: IProps) {
                 description="are you sure you want to decline this transaction?"
                 onConfirm={async () => {
                   await declineTransaction(item._id, axios);
+                  updateProfile();
                   refetch();
                 }}
               >
@@ -76,9 +72,8 @@ export default function UserTransactions({ address }: IProps) {
       actions: actions(item),
     }));
   }
-
   return (
-    <Col xs={24} md={22} lg={22} xl={22}>
+    <Col xs={24}>
       <Card title="Transactions">
         <Row gutter={[12, 12]}>
           <Col xs={24}>
