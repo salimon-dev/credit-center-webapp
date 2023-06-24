@@ -33,21 +33,30 @@ export function AuthContextProvider({ children }: IProps) {
   const [user, setUser] = useState<IUser>();
   const [loading, setLoading] = useState(true);
   async function updateProfile() {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     getProfile(
       axios.create({
         baseURL: baseUrl(),
         headers: { Authorization: "Bearer " + user.secretToken },
       })
-    ).then((response) => {
-      setUser({
-        ...user,
-        name: response.user.name,
-        balance: response.user.balance,
-        score: response.user.score,
+    )
+      .then((response) => {
+        setUser({
+          ...user,
+          name: response.user.name,
+          balance: response.user.balance,
+          score: response.user.score,
+        });
+      })
+      .catch(() => {
+        setUser(undefined);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-      setLoading(false);
-    });
   }
   useEffect(() => {
     const data = localStorage.getItem("user");
@@ -58,15 +67,23 @@ export function AuthContextProvider({ children }: IProps) {
           baseURL: baseUrl(),
           headers: { Authorization: "Bearer " + localUser.secretToken },
         })
-      ).then((response) => {
-        setUser({
-          ...localUser,
-          name: response.user.name,
-          balance: response.user.balance,
-          score: response.user.score,
+      )
+        .then((response) => {
+          setUser({
+            ...localUser,
+            name: response.user.name,
+            balance: response.user.balance,
+            score: response.user.score,
+          });
+        })
+        .catch(() => {
+          setUser(undefined);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-        setLoading(false);
-      });
+    } else {
+      setLoading(false);
     }
   }, []);
   if (loading) {

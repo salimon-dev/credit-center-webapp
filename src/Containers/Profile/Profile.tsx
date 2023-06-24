@@ -19,7 +19,7 @@ import Send from "./Components/Send";
 export default function Profile() {
   const [openDemand, setOpenDemand] = useState(false);
   const [openSend, setOpenSend] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const { token } = theme.useToken();
   if (!user) {
     return null;
@@ -57,6 +57,17 @@ export default function Profile() {
             style={{ color: token.colorBgLayout }}
           >
             Demand credit
+          </Button>
+        </Space>
+        <Space style={{ marginLeft: "auto" }}>
+          <Button
+            type="text"
+            style={{ color: token.colorBgContainer }}
+            onClick={() => {
+              setUser(undefined);
+            }}
+          >
+            Logout
           </Button>
         </Space>
       </Header>
