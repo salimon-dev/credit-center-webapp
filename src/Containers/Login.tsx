@@ -1,10 +1,22 @@
-import { Button, Card, Col, Form, Input, Layout, Row, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Layout,
+  Row,
+  Space,
+  Typography,
+} from "antd";
 import { useContext, useState } from "react";
 import { AuthContext, useAxios } from "../Providers/AuthProvider";
 import { login } from "../Rest/users";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
   const axios = useAxios();
   const { setUser } = useContext(AuthContext);
   const [form] = Form.useForm();
@@ -93,13 +105,24 @@ export default function Login() {
                         </Form.Item>
                       </Col>
                       <Col xs={24} style={{ textAlign: "right" }}>
-                        <Button
-                          htmlType="submit"
-                          type="primary"
-                          loading={submitting}
-                        >
-                          Login
-                        </Button>
+                        <Space>
+                          <Button
+                            htmlType="submit"
+                            type="text"
+                            onClick={() => {
+                              navigate("/");
+                            }}
+                          >
+                            Register new account
+                          </Button>
+                          <Button
+                            htmlType="submit"
+                            type="primary"
+                            loading={submitting}
+                          >
+                            Login
+                          </Button>
+                        </Space>
                       </Col>
                     </Row>
                   </Form>

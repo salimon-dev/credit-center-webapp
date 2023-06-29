@@ -6,6 +6,7 @@ export interface IUser {
   registeredAt: number;
   secretToken: string;
   secretDate: number;
+  otp: string;
 }
 
 export interface ITransaction {

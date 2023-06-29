@@ -6,6 +6,7 @@ import {
   Col,
   Descriptions,
   Layout,
+  QRCode,
   Row,
   Space,
   Typography,
@@ -15,6 +16,7 @@ import Transactions from "./Components/Transactions";
 import { Content, Header } from "antd/es/layout/layout";
 import Demand from "./Components/Demand";
 import Send from "./Components/Send";
+import { getTOTP } from "../../utils";
 
 export default function Profile() {
   const [openDemand, setOpenDemand] = useState(false);
@@ -24,6 +26,7 @@ export default function Profile() {
   if (!user) {
     return null;
   }
+  const totp = getTOTP(user.secretToken);
   return (
     <Layout className="layout">
       <Demand
@@ -78,7 +81,7 @@ export default function Profile() {
           <Col xs={24}>
             <Card title={user.name}>
               <Row gutter={[12, 12]}>
-                <Col xs={24}>
+                <Col xs={18}>
                   <Descriptions>
                     <Descriptions.Item label="Address">
                       {user.name}@cc.salimon.io
@@ -95,6 +98,25 @@ export default function Profile() {
                       </Typography.Text>
                     </Descriptions.Item>
                   </Descriptions>
+                </Col>
+                <Col xs={6}>
+                  <Row gutter={[12, 12]} style={{ textAlign: "center" }}>
+                    <Col xs={24}>
+                      <Typography.Text>
+                        Your time based on time token:
+                      </Typography.Text>
+                    </Col>
+                    <Col xs={24}>
+                      <Typography.Text code style={{ fontSize: 16 }} copyable>
+                        {totp.token}
+                      </Typography.Text>
+                    </Col>
+                    <Col xs={24}>
+                      <Typography.Text>
+                        Valid for: {totp.remaining} seconds
+                      </Typography.Text>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </Card>

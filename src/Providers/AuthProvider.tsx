@@ -49,7 +49,9 @@ export function AuthContextProvider({ children }: IProps) {
           name: response.user.name,
           balance: response.user.balance,
           score: response.user.score,
+          otp: response.user.otp,
         });
+        localStorage.setItem("token", user.secretToken);
       })
       .catch(() => {
         setUser(undefined);
@@ -74,7 +76,9 @@ export function AuthContextProvider({ children }: IProps) {
             name: response.user.name,
             balance: response.user.balance,
             score: response.user.score,
+            otp: response.user.otp,
           });
+          localStorage.setItem("token", localUser.secretToken);
         })
         .catch(() => {
           setUser(undefined);
@@ -98,6 +102,7 @@ export function AuthContextProvider({ children }: IProps) {
           setUser(data);
           if (data) {
             localStorage.setItem("user", JSON.stringify(data));
+            localStorage.setItem("token", data.secretToken);
           } else {
             localStorage.removeItem("user");
           }
@@ -112,7 +117,6 @@ export function AuthContextProvider({ children }: IProps) {
 export function useAxios() {
   const { user } = useContext(AuthContext);
   if (user) {
-    console.log(user.secretToken);
     return axios.create({
       baseURL: baseUrl(),
       headers: { Authorization: "Bearer " + user.secretToken },
