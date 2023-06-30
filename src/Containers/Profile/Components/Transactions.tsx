@@ -73,46 +73,42 @@ export default function Transactions() {
     }));
   }
   return (
-    <Col xs={24}>
-      <Card title="Transactions">
-        <Row gutter={[12, 12]}>
-          <Col xs={24}>
-            <Table
-              loading={isLoading}
-              pagination={{
-                pageSize,
-                current: page,
-                total: (data || { meta: { total: 0 } }).meta.total,
-                onChange: setPage,
-              }}
-              columns={[
-                { dataIndex: "num", key: "num", title: "#" },
-                { dataIndex: "from", key: "from", title: "From" },
-                { dataIndex: "to", key: "to", title: "To" },
-                { dataIndex: "amount", key: "amount", title: "Amount" },
-                { dataIndex: "fee", key: "fee", title: "Fee" },
-                { dataIndex: "status", key: "status", title: "Status" },
-                {
-                  dataIndex: "createdAt",
-                  key: "createdAt",
-                  title: "Created at",
-                },
-                {
-                  dataIndex: "executedAt",
-                  key: "executedAt",
-                  title: "Executed at",
-                },
-                {
-                  dataIndex: "actions",
-                  key: "actions",
-                  title: "Actions",
-                },
-              ]}
-              dataSource={dataSource()}
-            />
-          </Col>
-        </Row>
-      </Card>
-    </Col>
+    <Row gutter={[12, 12]}>
+      <Col xs={24}>
+        <Table
+          loading={isLoading}
+          pagination={{
+            pageSize,
+            current: page,
+            total: (data || { meta: { total: 0 } }).meta.total,
+            onChange: setPage,
+          }}
+          columns={[
+            { dataIndex: "num", key: "num", title: "#" },
+            { dataIndex: "from", key: "from", title: "From" },
+            { dataIndex: "to", key: "to", title: "To" },
+            { dataIndex: "amount", key: "amount", title: "Amount" },
+            { dataIndex: "fee", key: "fee", title: "Fee" },
+            { dataIndex: "status", key: "status", title: "Status" },
+            {
+              dataIndex: "createdAt",
+              key: "createdAt",
+              title: "Created at",
+            },
+            {
+              dataIndex: "executedAt",
+              key: "executedAt",
+              title: "Executed at",
+            },
+            {
+              dataIndex: "actions",
+              key: "actions",
+              title: "Actions",
+            },
+          ]}
+          dataSource={dataSource()}
+        />
+      </Col>
+    </Row>
   );
 }

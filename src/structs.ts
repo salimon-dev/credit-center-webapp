@@ -1,3 +1,7 @@
+export interface IReference {
+  _id: string;
+  name: string;
+}
 export interface IUser {
   _id: string;
   name: string;
@@ -18,6 +22,16 @@ export interface ITransaction {
   status: string;
   createdAt: number;
   executedAt?: number;
+}
+
+export interface ISession {
+  _id: string;
+  hostUser: IReference;
+  targetUser: IReference;
+  token: string;
+  status: string;
+  description: string;
+  createdAt: number;
 }
 
 export interface ICollection<T> {

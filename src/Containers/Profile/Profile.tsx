@@ -1,24 +1,15 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
-import {
-  Button,
-  Card,
-  Col,
-  Descriptions,
-  Layout,
-  QRCode,
-  Row,
-  Space,
-  Typography,
-  theme,
-} from "antd";
+import { Button, Card, Col, Layout, Row, Space, theme } from "antd";
 import Transactions from "./Components/Transactions";
 import { Content, Header } from "antd/es/layout/layout";
 import Demand from "./Components/Demand";
 import Send from "./Components/Send";
-import { getTOTP } from "../../utils";
+import Sessions from "./Components/Sessions";
+import BasicInfo from "./Components/BasicInfo";
 
 export default function Profile() {
+  const [acitveTab, setActiveTab] = useState("transactions");
   const [openDemand, setOpenDemand] = useState(false);
   const [openSend, setOpenSend] = useState(false);
   const { user, setUser } = useContext(AuthContext);
@@ -26,7 +17,6 @@ export default function Profile() {
   if (!user) {
     return null;
   }
-  const totp = getTOTP(user.secretToken);
   return (
     <Layout className="layout">
       <Demand
@@ -79,49 +69,21 @@ export default function Profile() {
       >
         <Row gutter={[0, 12]}>
           <Col xs={24}>
-            <Card title={user.name}>
-              <Row gutter={[12, 12]}>
-                <Col xs={18}>
-                  <Descriptions>
-                    <Descriptions.Item label="Address">
-                      {user.name}@cc.salimon.io
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Balance">
-                      {user.balance} bp
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Score">
-                      {user.score} sp
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Secret token">
-                      <Typography.Text copyable>
-                        {user.secretToken}
-                      </Typography.Text>
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Col>
-                <Col xs={6}>
-                  <Row gutter={[12, 12]} style={{ textAlign: "center" }}>
-                    <Col xs={24}>
-                      <Typography.Text>
-                        Your time based on time token:
-                      </Typography.Text>
-                    </Col>
-                    <Col xs={24}>
-                      <Typography.Text code style={{ fontSize: 16 }} copyable>
-                        {totp.token}
-                      </Typography.Text>
-                    </Col>
-                    <Col xs={24}>
-                      <Typography.Text>
-                        Valid for: {totp.remaining} seconds
-                      </Typography.Text>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
+            <BasicInfo />
+          </Col>
+          <Col xs={24}>
+            <Card
+              tabList={[
+                { key: "transactions", label: "Transactions" },
+                { key: "sessions", label: "Sessions" },
+              ]}
+              activeTabKey={acitveTab}
+              onTabChange={setActiveTab}
+            >
+              {acitveTab === "transactions" && <Transactions />}
+              {acitveTab === "sessions" && <Sessions />}
             </Card>
           </Col>
-          <Transactions />
         </Row>
       </Content>
     </Layout>
