@@ -1,7 +1,6 @@
 import {
   Alert,
   Button,
-  Card,
   Col,
   Form,
   Input,
@@ -14,7 +13,7 @@ import {
 import { fecthUser } from "../../../Rest/users";
 import { AuthContext, useAxios } from "../../../Providers/AuthProvider";
 import { useContext, useState } from "react";
-import { demandBalance, getFee, sendBalance } from "../../../Rest/transactions";
+import { getFee, sendBalance } from "../../../Rest/transactions";
 import { AxiosError } from "axios";
 import { useSearchParams } from "react-router-dom";
 import { useQueryClient } from "react-query";

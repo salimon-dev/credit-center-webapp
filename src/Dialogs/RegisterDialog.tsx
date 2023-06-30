@@ -1,7 +1,7 @@
 import { Button, Col, Form, Input, Modal, Row, Space, Typography } from "antd";
 import { register } from "../Rest/users";
 import { AuthContext, useAxios } from "../Providers/AuthProvider";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AxiosError } from "axios";
 import { useForm } from "antd/es/form/Form";
 

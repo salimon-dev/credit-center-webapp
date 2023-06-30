@@ -1,4 +1,4 @@
-import { Button, Card, Col, Popconfirm, Row, Space, Table } from "antd";
+import { Button, Col, Popconfirm, Row, Space, Table } from "antd";
 import { AuthContext, useAxios } from "../../../Providers/AuthProvider";
 import { useContext, useState } from "react";
 import { useQuery } from "react-query";
