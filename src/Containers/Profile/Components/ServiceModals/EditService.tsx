@@ -1,15 +1,27 @@
-import { Button, Col, Form, Input, Modal, Row, Select, Space } from "antd";
+import {
+  Alert,
+  Button,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Space,
+} from "antd";
 import { useState } from "react";
 import TextArea from "antd/es/input/TextArea";
-import { createService } from "../../../../Rest/services";
+import { editService } from "../../../../Rest/services";
+import { IService } from "../../../../structs";
 import { useQueryClient } from "react-query";
 
 interface IProps {
   open: boolean;
   onClose: () => void;
+  record: IService;
 }
 
-export default function CreateServiceModal({ open, onClose }: IProps) {
+export default function EditServiceModal({ open, onClose, record }: IProps) {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
@@ -22,11 +34,20 @@ export default function CreateServiceModal({ open, onClose }: IProps) {
     >
       <Form
         layout="vertical"
+        initialValues={{
+          title: record.title,
+          description: record.description,
+          baseUrl: record.baseUrl,
+          homePage: record.homePage,
+          terms: record.terms,
+          type: record.type,
+          secretToken: record.secretToken,
+        }}
         form={form}
         onFinish={async (values) => {
           try {
             setSubmitting(true);
-            await createService(values);
+            await editService(record._id, values);
             onClose();
             queryClient.refetchQueries("services");
           } catch (error) {

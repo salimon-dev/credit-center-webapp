@@ -12,7 +12,7 @@ interface ICreateServiceParams {
 }
 export async function createService(params: ICreateServiceParams) {
   return createAxios()
-    .post<{ ok: boolean; service: IService }>("/services/create", params)
+    .post<{ ok: boolean; service: IService }>("/services/", params)
     .then(() => true);
 }
 
@@ -23,6 +23,12 @@ export async function editService(
   return createAxios()
     .post<{ ok: boolean; service: IService }>("/services/" + id, params)
     .then((response) => response.data);
+}
+
+export async function removeService(id: string) {
+  return createAxios()
+    .delete("/services/" + id)
+    .then(() => true);
 }
 
 interface ISearchServices {

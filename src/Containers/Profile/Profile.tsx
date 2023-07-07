@@ -52,15 +52,6 @@ export default function Profile() {
           >
             Demand credit
           </Button>
-          <Button
-            onClick={() => {
-              setOpenDemand(true);
-            }}
-            type="text"
-            style={{ color: token.colorBgLayout }}
-          >
-            Register service
-          </Button>
         </Space>
         <Space style={{ marginLeft: "auto" }}>
           <Button

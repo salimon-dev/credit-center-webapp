@@ -1,14 +1,19 @@
-import { Button, Col, Row, Space, Table } from "antd";
+import { Button, Col, Popconfirm, Row, Space, Table } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { IService } from "../../../structs";
 import { tsToDate } from "../../../utils";
-import { searchServices } from "../../../Rest/services";
+import { removeService, searchServices } from "../../../Rest/services";
+import CreateServiceModal from "./ServiceModals/CreateService";
+import EditServiceModal from "./ServiceModals/EditService";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const pageSize = 10;
 export default function Services() {
   const [page, setPage] = useState(1);
-  const { data, isLoading, refetch } = useQuery(["transactions", page], () => {
+  const [openCreateService, setOpenCreateService] = useState(false);
+  const [editingService, setEditingService] = useState<IService>();
+  const { data, isLoading, refetch } = useQuery(["services", page], () => {
     return searchServices({ page, pageSize });
   });
 
@@ -17,10 +22,30 @@ export default function Services() {
     function actions(item: IService) {
       return (
         <Space>
-          <Button size="small" type="primary">
-            Execute
-          </Button>
-          <Button size="small">Decline</Button>
+          <Button
+            size="small"
+            type="text"
+            onClick={() => {
+              setEditingService(item);
+            }}
+            shape="circle"
+            icon={<EditOutlined />}
+          />
+          <Popconfirm
+            title="Remove service"
+            description="Are you sure you want to remove this service?"
+            onConfirm={async () => {
+              await removeService(item._id);
+              refetch();
+            }}
+          >
+            <Button
+              size="small"
+              type="text"
+              shape="circle"
+              icon={<DeleteOutlined />}
+            />
+          </Popconfirm>
         </Space>
       );
     }
@@ -37,6 +62,30 @@ export default function Services() {
   }
   return (
     <Row gutter={[12, 12]}>
+      <CreateServiceModal
+        open={openCreateService}
+        onClose={() => {
+          setOpenCreateService(false);
+        }}
+      />
+      {editingService && (
+        <EditServiceModal
+          record={editingService}
+          open={true}
+          onClose={() => {
+            setEditingService(undefined);
+          }}
+        />
+      )}
+      <Col xs={24} style={{ textAlign: "right" }}>
+        <Button
+          onClick={() => {
+            setOpenCreateService(true);
+          }}
+        >
+          + Register new service
+        </Button>
+      </Col>
       <Col xs={24}>
         <Table
           loading={isLoading}
@@ -61,6 +110,7 @@ export default function Services() {
               key: "updatedAt",
               title: "Updated at",
             },
+            { dataIndex: "actions", key: "actions", title: "actions" },
           ]}
           dataSource={dataSource()}
         />

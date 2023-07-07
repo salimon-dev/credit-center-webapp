@@ -111,7 +111,6 @@ export default function Register() {
                       <Col xs={24} style={{ textAlign: "right" }}>
                         <Space>
                           <Button
-                            htmlType="submit"
                             type="text"
                             onClick={() => {
                               navigate("/login");

@@ -108,13 +108,12 @@ export default function Login() {
                             },
                           ]}
                         >
-                          <Input />
+                          <Input.Password />
                         </Form.Item>
                       </Col>
                       <Col xs={24} style={{ textAlign: "right" }}>
                         <Space>
                           <Button
-                            htmlType="submit"
                             type="text"
                             onClick={() => {
                               navigate("/");
