@@ -1,5 +1,5 @@
 import { Button, Col, Popconfirm, Row, Space, Table } from "antd";
-import { AuthContext, useAxios } from "../../../Providers/AuthProvider";
+import { AuthContext } from "../../../Providers/AuthProvider";
 import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import {
@@ -13,19 +13,18 @@ import TransactionStatus from "../../../Components/TransactionStatus";
 
 const pageSize = 10;
 export default function Transactions() {
-  const axios = useAxios();
-  const { user, updateProfile } = useContext(AuthContext);
+  const { profile } = useContext(AuthContext);
   const [page, setPage] = useState(1);
   const { data, isLoading, refetch } = useQuery(["transactions", page], () => {
-    return searchTransactions({ page, pageSize }, axios);
+    return searchTransactions({ page, pageSize });
   });
 
   function dataSource() {
     if (isLoading || !data) return;
     function actions(item: ITransaction) {
-      if (!user) return null;
+      if (!profile) return null;
       if (item.status === "pending") {
-        if (item.from._id === user._id) {
+        if (item.from._id === profile._id) {
           return (
             <Space>
               <Popconfirm
@@ -33,8 +32,7 @@ export default function Transactions() {
                 okText="yes"
                 description={`by executing this transaction you send ${item.amount} to ${item.to.name} and pay ${item.fee} as fee to it.`}
                 onConfirm={async () => {
-                  await extecuteTransaction(item._id, axios);
-                  updateProfile();
+                  await extecuteTransaction(item._id);
                   refetch();
                 }}
               >
@@ -47,8 +45,7 @@ export default function Transactions() {
                 okText="yes"
                 description="are you sure you want to decline this transaction?"
                 onConfirm={async () => {
-                  await declineTransaction(item._id, axios);
-                  updateProfile();
+                  await declineTransaction(item._id);
                   refetch();
                 }}
               >

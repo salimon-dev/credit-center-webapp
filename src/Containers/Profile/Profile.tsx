@@ -3,18 +3,19 @@ import { AuthContext } from "../../Providers/AuthProvider";
 import { Button, Card, Col, Layout, Row, Space, theme } from "antd";
 import Transactions from "./Components/Transactions";
 import { Content, Header } from "antd/es/layout/layout";
-import Demand from "./Components/Demand";
-import Send from "./Components/Send";
+import Demand from "./Components/TransactionModals/Demand";
+import Send from "./Components/TransactionModals/Send";
 import Sessions from "./Components/Sessions";
 import BasicInfo from "./Components/BasicInfo";
+import Services from "./Components/Services";
 
 export default function Profile() {
   const [acitveTab, setActiveTab] = useState("transactions");
   const [openDemand, setOpenDemand] = useState(false);
   const [openSend, setOpenSend] = useState(false);
-  const { user, setUser } = useContext(AuthContext);
+  const { profile, unauthorize } = useContext(AuthContext);
   const { token } = theme.useToken();
-  if (!user) {
+  if (!profile) {
     return null;
   }
   return (
@@ -51,14 +52,21 @@ export default function Profile() {
           >
             Demand credit
           </Button>
+          <Button
+            onClick={() => {
+              setOpenDemand(true);
+            }}
+            type="text"
+            style={{ color: token.colorBgLayout }}
+          >
+            Register service
+          </Button>
         </Space>
         <Space style={{ marginLeft: "auto" }}>
           <Button
             type="text"
             style={{ color: token.colorBgContainer }}
-            onClick={() => {
-              setUser(undefined);
-            }}
+            onClick={unauthorize}
           >
             Logout
           </Button>
@@ -76,12 +84,14 @@ export default function Profile() {
               tabList={[
                 { key: "transactions", label: "Transactions" },
                 { key: "sessions", label: "Sessions" },
+                { key: "services", label: "Services" },
               ]}
               activeTabKey={acitveTab}
               onTabChange={setActiveTab}
             >
               {acitveTab === "transactions" && <Transactions />}
               {acitveTab === "sessions" && <Sessions />}
+              {acitveTab === "services" && <Services />}
             </Card>
           </Col>
         </Row>

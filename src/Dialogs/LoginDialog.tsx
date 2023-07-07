@@ -1,6 +1,6 @@
 import { Button, Col, Form, Input, Modal, Row, Space } from "antd";
 import { login } from "../Rest/users";
-import { AuthContext, useAxios } from "../Providers/AuthProvider";
+import { AuthContext } from "../Providers/AuthProvider";
 import { useContext } from "react";
 
 interface IProps {
@@ -8,11 +8,10 @@ interface IProps {
   onClose: () => void;
 }
 export default function LoginDialog({ onClose, open }: IProps) {
-  const axios = useAxios();
   const { setUser } = useContext(AuthContext);
   async function submit(values: { name: string; secretToken: string }) {
     try {
-      const result = await login(values, axios);
+      const result = await login(values);
       setUser(result.user);
       onClose();
     } catch (e) {

@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   ReactNode,
   createContext,
@@ -7,17 +6,23 @@ import {
   useState,
 } from "react";
 import { IUser } from "../structs";
-import { baseUrl } from "../configs/base";
 import { getProfile } from "../Rest/users";
+import { setAxiosAccessToken } from "../Rest/axios";
 
 export interface IAuthContext {
-  user?: IUser;
-  setUser: (user?: IUser) => void;
-  updateProfile: () => void;
+  accessToken?: string;
+  expiresAt?: number;
+  profile?: IUser;
+  authorize: (profile: IUser, accessToken: string, expiresAt: number) => void;
+  unauthorize: () => void;
+  updateProfile: (profile: IUser) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
-  setUser: () => {
+  authorize: () => {
+    return;
+  },
+  unauthorize: () => {
     return;
   },
   updateProfile: () => {
@@ -30,58 +35,40 @@ interface IProps {
 }
 
 export function AuthContextProvider({ children }: IProps) {
-  const [user, setUser] = useState<IUser>();
+  const [profile, setProfile] = useState<IUser>();
+  const [accessToken, setAccessToken] = useState<string>();
+  const [expiresAt, setExpiresAt] = useState<number>();
   const [loading, setLoading] = useState(true);
-  async function updateProfile() {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    getProfile(
-      axios.create({
-        baseURL: baseUrl(),
-        headers: { Authorization: "Bearer " + user.secretToken },
-      })
-    )
-      .then((response) => {
-        setUser({
-          ...user,
-          name: response.user.name,
-          balance: response.user.balance,
-          score: response.user.score,
-          otp: response.user.otp,
-        });
-        localStorage.setItem("token", user.secretToken);
-      })
-      .catch(() => {
-        setUser(undefined);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+
+  function authorize(profile: IUser, accessToken: string, expiresAt: number) {
+    setProfile(profile);
+    setAccessToken(accessToken);
+    setExpiresAt(expiresAt);
+    localStorage.setItem("profile", JSON.stringify(profile));
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("expiresAt", expiresAt + "");
+    setAxiosAccessToken(accessToken);
+  }
+
+  function unauthorize() {
+    localStorage.removeItem("profile");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("expiresAt");
+    setProfile(undefined);
+    setAccessToken(undefined);
+    setExpiresAt(undefined);
+    setAxiosAccessToken(undefined);
   }
   useEffect(() => {
-    const data = localStorage.getItem("user");
+    const data = localStorage.getItem("accessToken");
     if (data) {
-      const localUser = JSON.parse(data);
-      getProfile(
-        axios.create({
-          baseURL: baseUrl(),
-          headers: { Authorization: "Bearer " + localUser.secretToken },
-        })
-      )
+      setAxiosAccessToken(data);
+      getProfile()
         .then((response) => {
-          setUser({
-            ...localUser,
-            name: response.user.name,
-            balance: response.user.balance,
-            score: response.user.score,
-            otp: response.user.otp,
-          });
-          localStorage.setItem("token", localUser.secretToken);
+          authorize(response.user, response.accessToken, response.expiresAt);
         })
         .catch(() => {
-          setUser(undefined);
+          unauthorize();
         })
         .finally(() => {
           setLoading(false);
@@ -96,17 +83,12 @@ export function AuthContextProvider({ children }: IProps) {
   return (
     <AuthContext.Provider
       value={{
-        user,
-        updateProfile,
-        setUser: (data?: IUser) => {
-          setUser(data);
-          if (data) {
-            localStorage.setItem("user", JSON.stringify(data));
-            localStorage.setItem("token", data.secretToken);
-          } else {
-            localStorage.removeItem("user");
-          }
-        },
+        profile,
+        accessToken,
+        expiresAt,
+        authorize,
+        unauthorize,
+        updateProfile: setProfile,
       }}
     >
       {children}
@@ -114,21 +96,7 @@ export function AuthContextProvider({ children }: IProps) {
   );
 }
 
-export function useAxios() {
-  const { user } = useContext(AuthContext);
-  if (user) {
-    return axios.create({
-      baseURL: baseUrl(),
-      headers: { Authorization: "Bearer " + user.secretToken },
-    });
-  } else {
-    return axios.create({
-      baseURL: baseUrl(),
-    });
-  }
-}
-
 export function useIsLoggedIn() {
-  const { user } = useContext(AuthContext);
-  return !!user;
+  const { accessToken } = useContext(AuthContext);
+  return !!accessToken;
 }

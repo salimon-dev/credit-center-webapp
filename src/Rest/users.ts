@@ -1,8 +1,8 @@
-import { Axios } from "axios";
 import { ICollection, IUser } from "../structs";
+import { createAxios } from "./axios";
 
-export function fecthUser(name: string, axios: Axios) {
-  return axios
+export function fecthUser(name: string) {
+  return createAxios()
     .get<{ ok: boolean; user: IUser }>("/fetch", { params: { name } })
     .then((response) => response.data.user);
 }
@@ -12,30 +12,38 @@ interface ISearchUsersParams {
   page?: number;
   pageSize?: number;
 }
-export function searchUsers(params: ISearchUsersParams, axios: Axios) {
-  return axios
+export function searchUsers(params: ISearchUsersParams) {
+  return createAxios()
     .get<ICollection<IUser>>("/users", { params })
     .then((response) => response.data);
 }
 
-export function register(name: string, axios: Axios) {
-  return axios
-    .post<{ ok: boolean; user: IUser }>("/auth/register", { name })
-    .then((response) => response.data);
-}
-
-interface ILoginParams {
+export interface IAuthParams {
   name: string;
-  secretToken: string;
+  password: string;
 }
-export function login(params: ILoginParams, axios: Axios) {
-  return axios
-    .post<{ ok: boolean; user: IUser }>("/auth/login", params)
+
+export interface IAuthResponse {
+  ok: boolean;
+  user: IUser;
+  accessToken: string;
+  expiresAt: number;
+}
+
+export function register(params: { name: string; secretToken: string }) {
+  return createAxios()
+    .post<IAuthResponse>("/auth/register", params)
     .then((response) => response.data);
 }
 
-export function getProfile(axios: Axios) {
-  return axios
-    .get<{ ok: boolean; user: IUser }>("/auth/profile")
+export function login(params: IAuthParams) {
+  return createAxios()
+    .post<IAuthResponse>("/auth/login", params)
+    .then((response) => response.data);
+}
+
+export function getProfile() {
+  return createAxios()
+    .get<IAuthResponse>("/auth/profile")
     .then((response) => response.data);
 }

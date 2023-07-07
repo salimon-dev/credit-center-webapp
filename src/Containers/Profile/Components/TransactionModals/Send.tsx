@@ -10,13 +10,13 @@ import {
   Space,
   Typography,
 } from "antd";
-import { fecthUser } from "../../../Rest/users";
-import { AuthContext, useAxios } from "../../../Providers/AuthProvider";
-import { useContext, useState } from "react";
-import { demandBalance, getFee } from "../../../Rest/transactions";
+import { fecthUser } from "../../../../Rest/users";
+import { useState } from "react";
+import { getFee, sendBalance } from "../../../../Rest/transactions";
 import { AxiosError } from "axios";
 import { useSearchParams } from "react-router-dom";
 import { useQueryClient } from "react-query";
+import { getEnv } from "../../../../utils";
 
 interface IPreviewProps {
   name: string;
@@ -29,17 +29,18 @@ function PreviewResult({ name, amount, fee, score }: IPreviewProps) {
     <>
       <Col xs={24}>
         <Typography.Text>
-          Receipt: {name}@cc.salimon.io (score: {score} SP)
+          Receipt: {name}
+          {getEnv("SOURCE")} (score: {score} SP)
         </Typography.Text>
       </Col>
       <Col xs={24}>
         <Typography.Text>
-          Amount you get: {amount} BP (sender will pay {fee} BP as fee)
+          Amount you send: {amount} BP (you will pay {fee} BP as fee)
         </Typography.Text>
       </Col>
       <Col xs={24}>
         <Typography.Text>
-          Total amount spending on this transaction by sender: {amount + fee} BP
+          Total amount spending on this transaction by you: {amount + fee} BP
         </Typography.Text>
       </Col>
     </>
@@ -51,11 +52,9 @@ interface IProps {
   onClose: () => void;
 }
 
-export default function Demand({ open, onClose }: IProps) {
+export default function Send({ open, onClose }: IProps) {
   const [searchParams] = useSearchParams();
-  const { updateProfile } = useContext(AuthContext);
   const queryClient = useQueryClient();
-  const axios = useAxios();
   const [form] = Form.useForm();
   const [preview, setPreview] = useState<{
     name: string;
@@ -68,8 +67,8 @@ export default function Demand({ open, onClose }: IProps) {
     try {
       setRunningPreview(true);
       const { name, amount } = await form.validateFields();
-      const userResult = await fecthUser(name, axios);
-      const feeResult = await getFee(amount, axios);
+      const userResult = await fecthUser(name);
+      const feeResult = await getFee(amount);
       setPreview({
         name,
         amount,
@@ -90,9 +89,8 @@ export default function Demand({ open, onClose }: IProps) {
       setError(undefined);
       setSubmitting(true);
       const { name, amount } = await form.validateFields();
-      await demandBalance({ name, amount }, axios);
+      await sendBalance({ name, amount });
       queryClient.refetchQueries(["transactions"]);
-      updateProfile();
       onClose();
     } catch (e) {
       console.log(e);
@@ -107,7 +105,7 @@ export default function Demand({ open, onClose }: IProps) {
     }
   }
   return (
-    <Modal open={open} onCancel={onClose} title="Demand credit" footer={null}>
+    <Modal open={open} onCancel={onClose} title="Transfer credit" footer={null}>
       <Form
         layout="vertical"
         form={form}
@@ -120,7 +118,7 @@ export default function Demand({ open, onClose }: IProps) {
               label="name"
               rules={[{ required: true, message: "please enter the name" }]}
             >
-              <Input addonAfter="@cc.salimon.io" />
+              <Input addonAfter={getEnv("SOURCE")} />
             </Form.Item>
           </Col>
           <Col xs={24}>

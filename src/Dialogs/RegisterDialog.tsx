@@ -1,6 +1,6 @@
 import { Button, Col, Form, Input, Modal, Row, Space, Typography } from "antd";
 import { register } from "../Rest/users";
-import { AuthContext, useAxios } from "../Providers/AuthProvider";
+import { AuthContext } from "../Providers/AuthProvider";
 import { useContext } from "react";
 import { AxiosError } from "axios";
 import { useForm } from "antd/es/form/Form";
@@ -10,12 +10,11 @@ interface IProps {
   onClose: () => void;
 }
 export default function RegisterDialog({ onClose, open }: IProps) {
-  const axios = useAxios();
   const { setUser, user } = useContext(AuthContext);
   const [form] = useForm();
   async function submit({ name }: { name: string }) {
     try {
-      const result = await register(name, axios);
+      const result = await register(name);
       setUser(result.user);
     } catch (e) {
       const error = e as AxiosError;

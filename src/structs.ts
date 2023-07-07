@@ -34,6 +34,20 @@ export interface ISession {
   createdAt: number;
 }
 
+export interface IService {
+  _id: string;
+  createdAt: number;
+  updatedAt: number;
+  title: string;
+  description: string;
+  homePage?: string;
+  terms?: string;
+  baseUrl: string;
+  user: IReference;
+  type: string;
+  secretToken?: string;
+}
+
 export interface ICollection<T> {
   ok: boolean;
   data: T[];

@@ -10,47 +10,17 @@ import {
   Typography,
 } from "antd";
 import { useContext, useState } from "react";
-import { AuthContext, useAxios } from "../Providers/AuthProvider";
+import { AuthContext } from "../Providers/AuthProvider";
 import { login } from "../Rest/users";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import { getEnv } from "../utils";
 
 export default function Login() {
   const navigate = useNavigate();
-  const axios = useAxios();
-  const { setUser } = useContext(AuthContext);
+  const { authorize } = useContext(AuthContext);
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
-  async function submit({
-    name,
-    secretToken,
-  }: {
-    name: string;
-    secretToken: string;
-  }) {
-    try {
-      setSubmitting(true);
-      const result = await login({ name, secretToken }, axios);
-      setUser(result.user);
-    } catch (e) {
-      const error = e as AxiosError;
-      if (error.response) {
-        if (error.response.status === 422) {
-          const { errors } = error.response.data as {
-            errors: { field: string; message: string }[];
-          };
-          for (let i = 0; i < errors.length; i++) {
-            form.setFields([
-              { name: errors[i].field, errors: [errors[i].message] },
-            ]);
-          }
-        }
-      }
-      console.log(e);
-    } finally {
-      setSubmitting(false);
-    }
-  }
   return (
     <Layout>
       <Layout.Content>
@@ -72,7 +42,41 @@ export default function Login() {
                   </Typography.Text>
                 </Col>
                 <Col xs={24}>
-                  <Form layout="vertical" onFinish={submit} form={form}>
+                  <Form
+                    layout="vertical"
+                    onFinish={async (values) => {
+                      try {
+                        setSubmitting(true);
+                        const result = await login(values);
+                        authorize(
+                          result.user,
+                          result.accessToken,
+                          result.expiresAt
+                        );
+                      } catch (e) {
+                        const error = e as AxiosError;
+                        if (error.response) {
+                          if (error.response.status === 422) {
+                            const { errors } = error.response.data as {
+                              errors: { field: string; message: string }[];
+                            };
+                            for (let i = 0; i < errors.length; i++) {
+                              form.setFields([
+                                {
+                                  name: errors[i].field,
+                                  errors: [errors[i].message],
+                                },
+                              ]);
+                            }
+                          }
+                        }
+                        console.log(e);
+                      } finally {
+                        setSubmitting(false);
+                      }
+                    }}
+                    form={form}
+                  >
                     <Row>
                       <Col xs={24}>
                         <Form.Item
@@ -87,17 +91,20 @@ export default function Login() {
                             },
                           ]}
                         >
-                          <Input placeholder="john" addonAfter="@salimon.io" />
+                          <Input
+                            placeholder="john"
+                            addonAfter={getEnv("SOURCE")}
+                          />
                         </Form.Item>
                       </Col>
                       <Col xs={24}>
                         <Form.Item
-                          name="secretToken"
-                          label="Secret token"
+                          name="password"
+                          label="Password"
                           rules={[
                             {
                               required: true,
-                              message: "secret token is required",
+                              message: "password is required",
                             },
                           ]}
                         >

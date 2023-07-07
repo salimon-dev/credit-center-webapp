@@ -1,5 +1,4 @@
 import { Col, Row, Table } from "antd";
-import { useAxios } from "../../../Providers/AuthProvider";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { tsToDate } from "../../../utils";
@@ -7,10 +6,9 @@ import { searchSessions } from "../../../Rest/sessions";
 
 const pageSize = 10;
 export default function Sessions() {
-  const axios = useAxios();
   const [page, setPage] = useState(1);
   const { data, isLoading } = useQuery(["sessions", page], () => {
-    return searchSessions({ page, pageSize }, axios);
+    return searchSessions({ page, pageSize });
   });
 
   function dataSource() {

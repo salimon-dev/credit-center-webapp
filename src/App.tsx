@@ -6,7 +6,6 @@ import Login from "./Containers/Login";
 
 export default function App() {
   const isLoggedIn = useIsLoggedIn();
-
   if (isLoggedIn) {
     return <Profile />;
   } else {
