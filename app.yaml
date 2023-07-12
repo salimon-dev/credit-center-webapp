@@ -3,3 +3,4 @@ service: credit-app
 env_variables:
   VITE_BASE_URL: https://credit-api-dot-salimon.ew.r.appspot.com
   VITE_SOURCE: "cc.salimon.net"
+entrypoint: "npm start"
