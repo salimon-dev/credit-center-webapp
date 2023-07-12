@@ -14,7 +14,7 @@ import { AuthContext } from "../Providers/AuthProvider";
 import { login } from "../Rest/users";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { getEnv } from "../utils";
+import { source } from "../configs/base";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -91,10 +91,7 @@ export default function Login() {
                             },
                           ]}
                         >
-                          <Input
-                            placeholder="john"
-                            addonAfter={getEnv("SOURCE")}
-                          />
+                          <Input placeholder="john" addonAfter={source()} />
                         </Form.Item>
                       </Col>
                       <Col xs={24}>

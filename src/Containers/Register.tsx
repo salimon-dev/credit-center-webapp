@@ -15,7 +15,7 @@ import { register } from "../Rest/users";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidV4 } from "uuid";
-import { getEnv } from "../utils";
+import { source } from "../configs/base";
 export default function Register() {
   const navigate = useNavigate();
   const { authorize } = useContext(AuthContext);
@@ -97,10 +97,7 @@ export default function Register() {
                             },
                           ]}
                         >
-                          <Input
-                            placeholder="john"
-                            addonAfter={getEnv("SOURCE")}
-                          />
+                          <Input placeholder="john" addonAfter={source()} />
                         </Form.Item>
                       </Col>
                       <Col xs={24}>

@@ -1,6 +1,11 @@
 runtime: nodejs18
 service: credit-app
-env_variables:
-  VITE_BASE_URL: https://credit-api-dot-salimon.ew.r.appspot.com
-  VITE_SOURCE: "cc.salimon.net"
-entrypoint: "npm start"
+handlers:
+  # Serve all static files with url ending with a file extension
+  - url: /(.*\..+)$
+    static_files: dist/\1
+    upload: dist/(.*\..+)$
+  # Catch all handler to index.html
+  - url: /.*
+    static_files: dist/index.html
+    upload: dist/index.html

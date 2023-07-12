@@ -16,7 +16,7 @@ import { demandBalance, getFee } from "../../../../Rest/transactions";
 import { AxiosError } from "axios";
 import { useSearchParams } from "react-router-dom";
 import { useQueryClient } from "react-query";
-import { getEnv } from "../../../../utils";
+import { source } from "../../../../configs/base";
 
 interface IPreviewProps {
   name: string;
@@ -30,7 +30,7 @@ function PreviewResult({ name, amount, fee, score }: IPreviewProps) {
       <Col xs={24}>
         <Typography.Text>
           Receipt: {name}
-          {getEnv("SOURCE")} (score: {score} SP)
+          {source()} (score: {score} SP)
         </Typography.Text>
       </Col>
       <Col xs={24}>
@@ -118,7 +118,7 @@ export default function Demand({ open, onClose }: IProps) {
               label="name"
               rules={[{ required: true, message: "please enter the name" }]}
             >
-              <Input addonAfter={getEnv("SOURCE")} />
+              <Input addonAfter={source()} />
             </Form.Item>
           </Col>
           <Col xs={24}>

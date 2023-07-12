@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import { Card, Col, Descriptions, Row } from "antd";
-import { getEnv } from "../../../utils";
+import { source } from "../../../configs/base";
 
 export default function BasicInfo() {
   const { profile } = useContext(AuthContext);
@@ -14,7 +14,7 @@ export default function BasicInfo() {
         <Col xs={24}>
           <Descriptions>
             <Descriptions.Item label="Address">
-              {profile.name}@{getEnv("SOURCE")}
+              {profile.name}@{source()}
             </Descriptions.Item>
             <Descriptions.Item label="Balance">
               {profile.balance} bp

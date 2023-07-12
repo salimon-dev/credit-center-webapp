@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getEnv } from "../utils";
+import { baseUrl } from "../configs/base";
 
 let accessToken: string | undefined;
 
@@ -9,12 +9,12 @@ export function setAxiosAccessToken(value?: string) {
 export function createAxios() {
   if (accessToken) {
     return axios.create({
-      baseURL: getEnv("BASE_URL"),
+      baseURL: baseUrl(),
       headers: { Authorization: "Bearer " + accessToken },
     });
   } else {
     return axios.create({
-      baseURL: getEnv("BASE_URL"),
+      baseURL: baseUrl(),
     });
   }
 }

@@ -22,7 +22,3 @@ export function getTOTP(secret: string) {
   }
   return { token: number, remaining: 30 - passed };
 }
-
-export function getEnv(key: string): string {
-  return import.meta.env["VITE_" + key] || "N.A";
-}
